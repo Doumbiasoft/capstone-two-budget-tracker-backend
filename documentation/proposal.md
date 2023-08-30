@@ -18,7 +18,7 @@
 **4. In brief, outline your approach to creating your project (knowing that you may not know everything in advance and that these details might change later). Answer questions like the ones below, but feel free to add more information:**
 
 **a. What does your database schema look like?**
-![Img-Light](/documentation/medias/images/budget-tracker-theme-light.png#gh-light-mode-only)![Img-Dark](//documentation/medias/images/budget-tracker-theme-dark.png#gh-dark-mode-only)
+![Img-Light](../documentation/medias/images/budget-tracker-theme-light.png#gh-light-mode-only)![Img-Dark](../documentation/medias/images/budget-tracker-theme-dark.png#gh-dark-mode-only)
 
 **b. What kinds of issues might you run into with your API?**
 
