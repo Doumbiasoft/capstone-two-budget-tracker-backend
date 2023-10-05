@@ -1,2 +1,2 @@
-# Budget Tracker
+# Expense Tracker
 
