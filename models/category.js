@@ -24,6 +24,9 @@ class Category {
 
   if (!user) throw new NotFoundError(`No user: ${data.userId}`);
 
+  if (data.type!=="Expense" && data.type!=="Income") throw new NotFoundError(`The category type should be: Expense OR Income`);
+
+
     const result = await db.query(
           `INSERT INTO Categories (user_id,name,type)
            VALUES ($1, $2, $3)
@@ -105,6 +108,8 @@ class Category {
    */
 
   static async update(id, data) {
+
+    if (data.type!=="Expense" && data.type!=="Income") throw new NotFoundError(`The category type should be: Expense OR Income`);
 
     const { setCols, values } = sqlForPartialUpdate(
         data,
