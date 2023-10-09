@@ -11,7 +11,6 @@ const {
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
-const addCommas = require("../format_number.js");
 const cultureInfo = require("../culture_info.js");
 const customGroupBy = require("../customGroupBy.js");
 
@@ -212,16 +211,28 @@ class User {
     const endDate = today;
     
     /* Last seven days transitions */
-    const result = await db.query(
+    const result =  db.query(
       `SELECT t.id, t.category_id, t.user_id, t.amount, t.date, t.note, c.name AS "category_name", c.type AS "category_type"
        FROM transactions AS t
        LEFT JOIN categories AS c ON t.category_id = c.id
        WHERE t.user_id = $1 AND (t.date >=$2 AND t.date <= $3)`, [user_id, startDate, endDate]);
+
+    /* Recent Transactions */
+    const resultRecentTransactions =  db.query(
+      `SELECT t.id, t.category_id, t.user_id, t.amount, t.date, t.note, c.name AS "category_name", c.type AS "category_type"
+       FROM transactions AS t
+       LEFT JOIN categories AS c ON t.category_id = c.id
+       WHERE t.user_id = $1 ORDER BY t.date DESC LIMIT 5`, [user_id]);
+
+    const requests = await Promise.all([result, resultRecentTransactions])
     
-    const SelectedTransactions = result.rows;
+    const SelectedTransactions = requests[0].rows;
     dataDashboard.lastSevenTransactions = SelectedTransactions.map((row) => {
       return { ...row, amount: cultureInfo.format(row.amount)};
     });
+
+
+
 
     /* Total Income */
     const TotalIncome = SelectedTransactions.filter((x)=> x.category_type === "Income").reduce((prev, next) => +prev + +next.amount, 0);
@@ -260,7 +271,6 @@ class User {
       income: group.reduce((prev, next) => +prev + +next.amount, 0)
     }));
     
-    //dataDashboard.incomeSummary = IncomeSummary;
     
     /* Expense*/
     const groupedTransactionsExpenseByDate = customGroupBy(SelectedTransactions.filter((x) => x.category_type === "Expense"), (item) => item.date);
@@ -269,7 +279,6 @@ class User {
       expense: group.reduce((prev, next) => +prev + +next.amount, 0)
     }));
 
-    //dataDashboard.expenseSummary = ExpenseSummary;
 
     /* Generate an array of the last 7 days in the "dd-MMM" format */
     const Last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -290,6 +299,12 @@ class User {
     });
 
     dataDashboard.splineChartData = SplineChartData;
+
+    /* Recent Transactions */
+    const RecentTransactions = requests[1].rows;
+    dataDashboard.recentTransactions = RecentTransactions.map((row) => {
+      return { ...row, amount: cultureInfo.format(row.amount), date: row.date.toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }) };
+    });
 
     return dataDashboard;
   }
