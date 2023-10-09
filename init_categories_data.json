@@ -1,0 +1,25 @@
+{
+    "data": [
+        {"name": "Car", "type": "Expense"},
+        {"name": "Children", "type": "Expense"},
+        {"name": "Clothing", "type": "Expense"},
+        {"name": "Donation", "type": "Expense"},
+        {"name": "Education", "type": "Expense"},
+        {"name": "Entertainment", "type": "Expense"},
+        {"name": "Groceries", "type": "Expense"},
+        {"name": "Gym", "type": "Expense"},
+        {"name": "Healthcare", "type": "Expense"},
+        {"name": "Home", "type": "Expense"},
+        {"name": "Insurance", "type": "Expense"},
+        {"name": "Loans", "type": "Expense"},
+        {"name": "Rent", "type": "Expense"},
+        {"name": "Restaurants", "type": "Expense"},
+        {"name": "Pet", "type": "Expense"},
+        {"name": "Salary", "type": "Income"},
+        {"name": "Shop", "type": "Expense"},
+        {"name": "Subscriptions", "type": "Expense"},
+        {"name": "Transportation", "type": "Expense"},
+        {"name": "Travel & Vacation", "type": "Expense"},
+        {"name": "Work Expenses", "type": "Expense"}
+    ]
+}
