@@ -54,9 +54,9 @@ router.post("/", async function (req, res, next) {
 
 /** GET /[id] => { user }
  *
-   *   Returns { email, first_name, last_name, transactions, categories }
-   *   where transaction is { id, category_id, user_id, amount, date, note, category_name }
-   *   where category is { id, user_id, name, type}
+   *   Returns { email, firstName, lastName, transactions, categories }
+   *   where transaction is { id, categoryId, userId, amount, date, note, categoryName }
+   *   where category is { id, userId, name, type}
    * 
  *
  * Authorization required: same user-as-:id

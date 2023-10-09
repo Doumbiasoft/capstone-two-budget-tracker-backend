@@ -20,7 +20,7 @@ const customGroupBy = require("../customGroupBy.js");
 class User {
   /** authenticate user with email, password.
    *
-   * Returns {id, first_name, last_name, email }
+   * Returns {id, firstName, lastName, email }
    *
    * Throws UnauthorizedError is user not found or wrong password.
    **/
@@ -133,7 +133,7 @@ class User {
     if (!user) throw new NotFoundError(`No user with id: ${id}`);
 
     const userTransactions = await db.query(
-          `SELECT t.id, t.category_id, t.user_id, t.amount, t.date, t.note, c.name AS "category_name", c.type AS "category_type"
+          `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
            FROM transactions AS t
            LEFT JOIN categories AS c ON t.category_id = c.id
            WHERE t.user_id = $1`, [user.id]);
@@ -142,7 +142,7 @@ class User {
 
 
     const userCategories = await db.query(
-      `SELECT id, user_id, name, type
+      `SELECT id, user_id AS "userId", name, type
        FROM categories
        WHERE user_id = $1`, [user.id]);
 
@@ -202,7 +202,7 @@ class User {
   /**Dashboard
    * 
    */
-  static async getDashboard(user_id){
+  static async getDashboard(userId){
 
     let dataDashboard={};
     const today = new Date();
@@ -212,17 +212,17 @@ class User {
     
     /* Last seven days transitions */
     const result =  db.query(
-      `SELECT t.id, t.category_id, t.user_id, t.amount, t.date, t.note, c.name AS "category_name", c.type AS "category_type"
+      `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
        FROM transactions AS t
        LEFT JOIN categories AS c ON t.category_id = c.id
-       WHERE t.user_id = $1 AND (t.date >=$2 AND t.date <= $3)`, [user_id, startDate, endDate]);
+       WHERE t.user_id = $1 AND (t.date >=$2 AND t.date <= $3)`, [userId, startDate, endDate]);
 
     /* Recent Transactions */
     const resultRecentTransactions =  db.query(
-      `SELECT t.id, t.category_id, t.user_id, t.amount, t.date, t.note, c.name AS "category_name", c.type AS "category_type"
+      `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
        FROM transactions AS t
        LEFT JOIN categories AS c ON t.category_id = c.id
-       WHERE t.user_id = $1 ORDER BY t.date DESC LIMIT 5`, [user_id]);
+       WHERE t.user_id = $1 ORDER BY t.date DESC LIMIT 5`, [userId]);
 
     const requests = await Promise.all([result, resultRecentTransactions])
     
@@ -235,11 +235,11 @@ class User {
 
 
     /* Total Income */
-    const TotalIncome = SelectedTransactions.filter((x)=> x.category_type === "Income").reduce((prev, next) => +prev + +next.amount, 0);
+    const TotalIncome = SelectedTransactions.filter((x)=> x.categoryType === "Income").reduce((prev, next) => +prev + +next.amount, 0);
     dataDashboard.totalIncome = cultureInfo.format(TotalIncome);
 
     /* Total Expenses */
-    const TotalExpense = SelectedTransactions.filter((x)=> x.category_type === "Expense").reduce((prev, next) => +prev + +next.amount, 0);
+    const TotalExpense = SelectedTransactions.filter((x)=> x.categoryType === "Expense").reduce((prev, next) => +prev + +next.amount, 0);
     dataDashboard.totalExpense = cultureInfo.format(TotalExpense);
 
     /* Balance calculation */
@@ -250,11 +250,11 @@ class User {
 
     /* Doughnut Chart - Expense By Category */
     /* Filter and group transactions */
-    const groupedTransactionsExpense = customGroupBy(SelectedTransactions.filter((x) => x.category_type === "Expense"), (item) => item.category_id);
+    const groupedTransactionsExpense = customGroupBy(SelectedTransactions.filter((x) => x.categoryType === "Expense"), (item) => item.categoryId);
 
     /* Process and sort the grouped data */
     const DoughnutChartData = Object.values(groupedTransactionsExpense).map((group) => ({
-      categoryName: group[0].category_name,
+      categoryName: group[0].categoryName,
       amount: group.reduce((prev, next) => +prev + +next.amount, 0),
       formattedAmount: cultureInfo.format(group.reduce((prev, next) => +prev + +next.amount, 0)),
     })).sort((a, b) => a.amount - b.amount);
@@ -265,7 +265,7 @@ class User {
 
     /* SplineChartData */
     /* Income */
-    const groupedTransactionsIncomeByDate = customGroupBy(SelectedTransactions.filter((x) => x.category_type === "Income"), (item) => item.date);
+    const groupedTransactionsIncomeByDate = customGroupBy(SelectedTransactions.filter((x) => x.categoryType === "Income"), (item) => item.date);
     const IncomeSummary = Object.values(groupedTransactionsIncomeByDate).map((group) => ({
       day: group[0].date,
       income: group.reduce((prev, next) => +prev + +next.amount, 0)
@@ -273,7 +273,7 @@ class User {
     
     
     /* Expense*/
-    const groupedTransactionsExpenseByDate = customGroupBy(SelectedTransactions.filter((x) => x.category_type === "Expense"), (item) => item.date);
+    const groupedTransactionsExpenseByDate = customGroupBy(SelectedTransactions.filter((x) => x.categoryType === "Expense"), (item) => item.date);
     const ExpenseSummary = Object.values(groupedTransactionsExpenseByDate).map((group) => ({
       day: group[0].date,
       expense: group.reduce((prev, next) => +prev + +next.amount, 0)

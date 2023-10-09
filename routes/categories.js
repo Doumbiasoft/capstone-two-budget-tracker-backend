@@ -73,11 +73,11 @@ router.get("/:id/users/:user_id", ensureLoggedIn, async function (req, res, next
 });
 
 
-/** PATCH /[category_id]  { fld1, fld2, ... } => { category }
+/** PATCH /[categoryId]  { fld1, fld2, ... } => { category }
  *
  * Data can include: { name, type }
  *
- * Returns { id, user_id, name, type }
+ * Returns { id, userId, name, type }
  *
  * Authorization required: current user
  */
@@ -97,7 +97,7 @@ router.patch("/:id", ensureLoggedIn, async function (req, res, next) {
   }
 });
 
-/** DELETE /[handle]  =>  { deleted: id }
+/** DELETE /[id]  =>  { deleted: id }
  *
  * Authorization required: current user
  */

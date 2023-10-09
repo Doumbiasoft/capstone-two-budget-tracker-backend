@@ -16,9 +16,9 @@ const router = express.Router({ mergeParams: true });
 
 /** POST / { transaction } => { transaction }
  *
- * transaction should be {category_id, user_id, amount, date, note }
+ * transaction should be {categoryId, userId, amount, date, note }
  *
- * Returns { id, category_id, user_id, amount, date, note }
+ * Returns { id, categoryId, userId, amount, date, note }
  *
  * Authorization required: current user
  */
@@ -39,32 +39,32 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 });
 
 /** GET / =>
- *   { transactions: [ { id, category_id, user_id, amount, date, note, category_name ,category_type}, ...] }
+ *   { transactions: [ { id, categoryId, userId, amount, date, note, categoryName ,categoryType}, ...] }
  *
  * Authorization required: current user
  */
 
 
-router.get("/users/:user_id", ensureLoggedIn, async function (req, res, next) {
+router.get("/users/:userId", ensureLoggedIn, async function (req, res, next) {
     try {
 
-      const transactions = await Transaction.findAll(req.params.user_id);
+      const transactions = await Transaction.findAll(req.params.userId);
       return res.json({ transactions });
     } catch (err) {
       return next(err);
     }
   });
 
-/** GET /[transaction_id]/users/[user_id] => { transaction }
+/** GET /[id]/users/[userId] => { transaction }
  *
- * Returns { id, category_id, user_id, amount, date, note, category_name ,category_type}
+ * Returns { id, categoryId, userId, amount, date, note, categoryName ,categoryType}
  *
  * Authorization required: current user
  */
 
-router.get("/:id/users/:user_id", ensureLoggedIn, async function (req, res, next) {
+router.get("/:id/users/:userId", ensureLoggedIn, async function (req, res, next) {
   try {
-    const transaction = await Transaction.get(req.params.id, req.params.user_id);
+    const transaction = await Transaction.get(req.params.id, req.params.userId);
     return res.json({ transaction });
   } catch (err) {
     return next(err);
@@ -72,11 +72,11 @@ router.get("/:id/users/:user_id", ensureLoggedIn, async function (req, res, next
 });
 
 
-/** PATCH /[transaction_id]/users/[user_id]  { fld1, fld2, ... } => { transaction }
+/** PATCH /[id]/users/[userId]  { fld1, fld2, ... } => { transaction }
  *
- * Data can include: { category_id, amount, date, note }
+ * Data can include: { categoryId, amount, date, note }
  *
- * Returns { id, category_id, user_id, amount, date, note }
+ * Returns { id, categoryId, userId, amount, date, note }
  *
  * Authorization required: current user
  */
@@ -96,7 +96,7 @@ router.patch("/:id", ensureLoggedIn, async function (req, res, next) {
   }
 });
 
-/** DELETE /[handle]  =>  { deleted: id }
+/** DELETE /[id]  =>  { deleted: id }
  *
  * Authorization required: current user
  */

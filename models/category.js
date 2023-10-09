@@ -10,26 +10,26 @@ const { sqlForPartialUpdate } = require("../helpers/sql");
 class Category {
   /** Create a category (from data), update db, return new category data.
    *
-   * data should be {user_id, name, type}
+   * data should be {userId, name, type}
    *
-   * Returns { id, user_id, name, type }
+   * Returns { id, userId, name, type }
    **/
 
   static async create(data) {
     const preCheckUser = await db.query(
       `SELECT id
        FROM users
-       WHERE id = $1`, [data.user_id]);
+       WHERE id = $1`, [data.userId]);
     const user = preCheckUser.rows[0];
 
-  if (!user) throw new NotFoundError(`No user: ${data.user_id}`);
+  if (!user) throw new NotFoundError(`No user: ${data.userId}`);
 
     const result = await db.query(
           `INSERT INTO Categories (user_id,name,type)
            VALUES ($1, $2, $3)
-           RETURNING id, user_id, name, type`,
+           RETURNING id, user_id AS "userId", name, type`,
         [
-          data.user_id,
+          data.userId,
           data.name,
           data.type,
         ]);
@@ -41,52 +41,52 @@ class Category {
   /** Find all categories by current user id (id).
    *
    *
-   * Returns [{ id, user_id, name, type}, ...]
+   * Returns [{ id, userId, name, type}, ...]
    * */
 
-  static async findAll(user_id) {
+  static async findAll(userId) {
     const preCheckUser = await db.query(
       `SELECT id
        FROM users
-       WHERE id = $1`, [user_id]);
+       WHERE id = $1`, [userId]);
     const user = preCheckUser.rows[0];
 
-  if (!user) throw new NotFoundError(`No user: ${user_id}`);
+  if (!user) throw new NotFoundError(`No user: ${userId}`);
 
     const result = await db.query(
         `SELECT id,
-            user_id,
+            user_id AS "userId",
             name,
             type
-        FROM categories WHERE user_id =$1`,[user_id]);
+        FROM categories WHERE user_id =$1`,[userId]);
 
   return result.rows;
   }
 
   /** Given a category id, return data about category.
    *
-   * Returns { id, user_id, name, type }
+   * Returns { id, userId, name, type }
    *  
    *
    * Throws NotFoundError if not found.
    **/
 
-  static async get(id, user_id) {
+  static async get(id, userId) {
 
     const preCheckUser = await db.query(
       `SELECT id
        FROM users
-       WHERE id = $1`, [user_id]);
+       WHERE id = $1`, [userId]);
     const user = preCheckUser.rows[0];
 
-  if (!user) throw new NotFoundError(`No user: ${user_id}`);
+  if (!user) throw new NotFoundError(`No user: ${userId}`);
 
     const result = await db.query(
         `SELECT id,
-            user_id,
+            user_id AS "userId",
             name,
             type
-        FROM categories WHERE id =$1 AND user_id =$2`,[id, user_id]);
+        FROM categories WHERE id =$1 AND user_id =$2`,[id, userId]);
 
     const category = result.rows[0];
     return category;
@@ -99,7 +99,7 @@ class Category {
    *
    * Data can include: { name, type }
    *
-   * Returns { id, user_id, name, type }
+   * Returns { id, userId, name, type }
    *
    * Throws NotFoundError if not found.
    */
@@ -108,14 +108,14 @@ class Category {
 
     const { setCols, values } = sqlForPartialUpdate(
         data,
-        {});
+        {userId: "user_id"});
     const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE categories 
                       SET ${setCols} 
                       WHERE id = ${idVarIdx}
                       RETURNING id, 
-                                user_id, 
+                                user_id AS "userId",
                                 name, 
                                 type`;
     const result = await db.query(querySql, [...values, id]);

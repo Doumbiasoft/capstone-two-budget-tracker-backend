@@ -10,27 +10,27 @@ const { sqlForPartialUpdate } = require("../helpers/sql");
 class Transaction {
   /** Create a transaction (from data), update db, return new transaction data.
    *
-   * data should be { category_id, user_id, amount, date, note }
+   * data should be { categoryId, userId, amount, date, note }
    *
-   * Returns { id, category_id, user_id, amount, date, note }
+   * Returns { id, categoryId, userId, amount, date, note }
    **/
 
   static async create(data) {
     const preCheckUser = await db.query(
       `SELECT id
        FROM users
-       WHERE id = $1`, [data.user_id]);
+       WHERE id = $1`, [data.userId]);
     const user = preCheckUser.rows[0];
 
-  if (!user) throw new NotFoundError(`No user: ${data.user_id}`);
+  if (!user) throw new NotFoundError(`No user: ${data.userId}`);
 
     const result = await db.query(
           `INSERT INTO transactions (category_id, user_id, amount, date, note)
            VALUES ($1, $2, $3, $4, $5)
-           RETURNING id, category_id, user_id, amount, date, note`,
+           RETURNING id, category_id AS "categoryId", user_id AS "userId", amount, date, note`,
         [
-          data.category_id,
-          data.user_id,
+          data.categoryId,
+          data.userId,
           data.amount,
           data.date,
           data.note,
@@ -40,49 +40,49 @@ class Transaction {
     return transaction;
   }
 
-  /** Find all current user transactions (user_id).
+  /** Find all current user transactions (userId).
    *
    *
-   * Returns [{ id, category_id, user_id, amount, date, note, category_name ,category_type}, ...]
+   * Returns [{ id, categoryId, userId, amount, date, note, categoryName ,categoryType}, ...]
    * */
 
-  static async findAll(user_id) {
+  static async findAll(userId) {
     const preCheckUser = await db.query(
       `SELECT id
        FROM users
-       WHERE id = $1`, [user_id]);
+       WHERE id = $1`, [userId]);
     const user = preCheckUser.rows[0];
 
-  if (!user) throw new NotFoundError(`No user: ${user_id}`);
+  if (!user) throw new NotFoundError(`No user: ${userId}`);
 
     const transactions = await db.query(
-        `SELECT t.id, t.category_id, t.user_id, t.amount, t.date, t.note, c.name AS "category_name", c.type AS "category_type"
+        `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
          FROM transactions AS t
          LEFT JOIN categories AS c ON t.category_id = c.id
-         WHERE t.user_id = $1`, [user_id]);
+         WHERE t.user_id = $1`, [userId]);
     return transactions.rows;
   }
 
-  /** Given a transaction id and user_id, return data about transaction.
+  /** Given a transaction id and userId, return data about transaction.
    *
-   * Returns { id, category_id, user_id, amount, date, note, category_name ,category_type}
+   * Returns { id, categoryId, userId, amount, date, note, categoryName ,categoryType}
    *
    * Throws NotFoundError if not found.
    **/
 
-  static async get(id, user_id) {
+  static async get(id, userId) {
     const preCheckUser = await db.query(
       `SELECT id
        FROM users
-       WHERE id = $1`, [user_id]);
+       WHERE id = $1`, [userId]);
     const user = preCheckUser.rows[0];
 
-  if (!user) throw new NotFoundError(`No user: ${user_id}`);
+  if (!user) throw new NotFoundError(`No user: ${userId}`);
     const result = await db.query(
-        `SELECT t.id, t.category_id, t.user_id, t.amount, t.date, t.note, c.name AS "category_name", c.type AS "category_type"
-         FROM transactions AS t
-         LEFT JOIN categories AS c ON t.category_id = c.id
-         WHERE t.id=$1 AND t.user_id = $2`, [id, user_id]);
+       `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
+        FROM transactions AS t
+        LEFT JOIN categories AS c ON t.category_id = c.id
+        WHERE t.id=$1 AND t.user_id = $2`, [id, userId]);
 
     const transaction = result.rows[0];
 
@@ -96,9 +96,9 @@ class Transaction {
    * This is a "partial update" --- it's fine if data doesn't contain
    * all the fields; this only changes provided ones.
    *
-   * Data can include: { category_id, amount, date, note }
+   * Data can include: { categoryId, amount, date, note }
    *
-   * Returns { id, category_id, user_id, amount, date, note }
+   * Returns { id, categoryId, userId, amount, date, note }
    *
    * Throws NotFoundError if not found.
    */
@@ -107,15 +107,15 @@ class Transaction {
  
     const { setCols, values } = sqlForPartialUpdate(
         data,
-        {});
+        { categoryId: "category_id" });
     const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE transactions 
                       SET ${setCols} 
                       WHERE id = ${idVarIdx}
                       RETURNING id, 
-                                category_id, 
-                                user_id, 
+                                category_id AS "categoryId",
+                                user_id AS "userId",
                                 amount, 
                                 date, 
                                 note`;
