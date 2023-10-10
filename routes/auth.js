@@ -59,9 +59,9 @@ router.post("/register", async function (req, res, next) {
 
     const newUser = await User.register({ ...req.body });
     if (newUser){
-      const user_id = newUser.id;
+      const userId = newUser.id;
      for(let cat of categories){
-      await Category.create({...cat, user_id});
+      await Category.create({...cat, userId});
      }
     }
     const token = createToken(newUser);

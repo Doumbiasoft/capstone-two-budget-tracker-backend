@@ -5,7 +5,7 @@
 >Create a personal finance app for tracking income, expenses. Implement data visualization to help users analyze their financial trends.
 >**Host:** **[Render.com](https://render.com)**
 >**The JSON REST API is online at:**
->**https://expense-tracker-backend.onrender.com**
+>**https://expense-tracker-backend-jnmy.onrender.com**
 
 **DATABASE SCHEMA**:
 ![Img-Light](documentation/medias/images/expense_tracker_database_schema_light.png#gh-light-mode-only)![Img-Dark](documentation/medias/images/expense_tracker_database_schema_dark.png#gh-dark-mode-only)
