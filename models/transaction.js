@@ -36,7 +36,6 @@ class Transaction {
           data.note,
         ]);
     let transaction = result.rows[0];
-
     return transaction;
   }
 
@@ -123,7 +122,6 @@ class Transaction {
     const transaction = result.rows[0];
 
     if (!transaction) throw new NotFoundError(`No transaction: ${id}`);
-
     return transaction;
   }
 

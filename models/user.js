@@ -11,8 +11,9 @@ const {
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
-const cultureInfo = require("../culture_info.js");
-const customGroupBy = require("../customGroupBy.js");
+/** libs */
+const cultureInfo = require("../libs/culture_info.js");
+const customGroupBy = require("../libs/customGroupBy.js");
 
 
 /** Related functions for users. */
@@ -88,7 +89,6 @@ class User {
     );
     
     const user = result.rows[0];
-
     return user;
   }
 
@@ -179,7 +179,6 @@ class User {
     const user = result.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${id}`);
-
     return user;
   }
 
@@ -195,7 +194,7 @@ class User {
          WHERE id = $1
          RETURNING id`, [id]);
     const user = result.rows[0];
-
+    delete user.password;
     if (!user) throw new NotFoundError(`No user: ${id}`);
   }
 

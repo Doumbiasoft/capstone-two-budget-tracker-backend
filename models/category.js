@@ -37,7 +37,6 @@ class Category {
           data.type,
         ]);
     let category = result.rows[0];
-
     return category;
   }
 
@@ -127,7 +126,6 @@ class Category {
     const category = result.rows[0];
 
     if (!category) throw new NotFoundError(`No category: ${id}`);
-
     return category;
   }
 
@@ -145,6 +143,7 @@ class Category {
     const category = result.rows[0];
 
     if (!category) throw new NotFoundError(`No category: ${id}`);
+
   }
 }
 
