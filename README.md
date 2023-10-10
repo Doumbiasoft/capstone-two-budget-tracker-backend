@@ -75,7 +75,7 @@ HTTP **POST**: register a new user
 #### => users
 * **/users/:id**  
 HTTP **GET**: returns the user with given id (numeric, auto-incrementing).  HTTP 404 if user not found 
-```
+```json
 {
     "user": {
         "id": "7",
@@ -273,54 +273,6 @@ Here is an example of results returned from HTTP GET on **/categories/users/:use
 {
     "categories": [
         {
-            "id": "36",
-            "userId": "7",
-            "name": "Car",
-            "type": "Expense"
-        },
-        {
-            "id": "37",
-            "userId": "7",
-            "name": "Children",
-            "type": "Expense"
-        },
-        {
-            "id": "38",
-            "userId": "7",
-            "name": "Clothing",
-            "type": "Expense"
-        },
-        {
-            "id": "39",
-            "userId": "7",
-            "name": "Donation",
-            "type": "Expense"
-        },
-        {
-            "id": "40",
-            "userId": "7",
-            "name": "Education",
-            "type": "Expense"
-        },
-        {
-            "id": "41",
-            "userId": "7",
-            "name": "Entertainment",
-            "type": "Expense"
-        },
-        {
-            "id": "42",
-            "userId": "7",
-            "name": "Groceries",
-            "type": "Expense"
-        },
-        {
-            "id": "43",
-            "userId": "7",
-            "name": "Gym",
-            "type": "Expense"
-        },
-        {
             "id": "44",
             "userId": "7",
             "name": "Healthcare",
@@ -345,63 +297,9 @@ Here is an example of results returned from HTTP GET on **/categories/users/:use
             "type": "Expense"
         },
         {
-            "id": "48",
-            "userId": "7",
-            "name": "Rent",
-            "type": "Expense"
-        },
-        {
-            "id": "49",
-            "userId": "7",
-            "name": "Restaurants",
-            "type": "Expense"
-        },
-        {
-            "id": "50",
-            "userId": "7",
-            "name": "Pet",
-            "type": "Expense"
-        },
-        {
             "id": "51",
             "userId": "7",
             "name": "Salary",
-            "type": "Income"
-        },
-        {
-            "id": "52",
-            "userId": "7",
-            "name": "Shop",
-            "type": "Expense"
-        },
-        {
-            "id": "53",
-            "userId": "7",
-            "name": "Subscriptions",
-            "type": "Expense"
-        },
-        {
-            "id": "54",
-            "userId": "7",
-            "name": "Transportation",
-            "type": "Expense"
-        },
-        {
-            "id": "55",
-            "userId": "7",
-            "name": "Travel & Vacation",
-            "type": "Expense"
-        },
-        {
-            "id": "56",
-            "userId": "7",
-            "name": "Work Expenses",
-            "type": "Expense"
-        },
-        {
-            "id": "58",
-            "userId": "7",
-            "name": "sell",
             "type": "Income"
         }
     ]
