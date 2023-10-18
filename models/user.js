@@ -227,7 +227,7 @@ class User {
     
     const SelectedTransactions = requests[0].rows;
     dataDashboard.lastSevenTransactions = SelectedTransactions.map((row) => {
-      return { ...row, amount: cultureInfo.format(row.amount)};
+      return { ...row, amount: row.amount};
     });
 
 
@@ -235,17 +235,17 @@ class User {
 
     /* Total Income */
     const TotalIncome = SelectedTransactions.filter((x)=> x.categoryType === "Income").reduce((prev, next) => +prev + +next.amount, 0);
-    dataDashboard.totalIncome = cultureInfo.format(TotalIncome);
+    dataDashboard.totalIncome = TotalIncome;
 
     /* Total Expenses */
     const TotalExpense = SelectedTransactions.filter((x)=> x.categoryType === "Expense").reduce((prev, next) => +prev + +next.amount, 0);
-    dataDashboard.totalExpense = cultureInfo.format(TotalExpense);
+    dataDashboard.totalExpense = TotalExpense;
 
     /* Balance calculation */
     const Balance = TotalIncome - TotalExpense;
 
     const formattedBalance = cultureInfo.format(Balance);
-    dataDashboard.balance = formattedBalance;
+    dataDashboard.balance = Balance;
 
     /* Doughnut Chart - Expense By Category */
     /* Filter and group transactions */
@@ -302,7 +302,7 @@ class User {
     /* Recent Transactions */
     const RecentTransactions = requests[1].rows;
     dataDashboard.recentTransactions = RecentTransactions.map((row) => {
-      return { ...row, amount: cultureInfo.format(row.amount), date: row.date.toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }) };
+      return { ...row, amount: row.amount, date: row.date.toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }) };
     });
 
     return dataDashboard;
