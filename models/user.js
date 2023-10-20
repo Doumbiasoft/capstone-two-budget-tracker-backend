@@ -169,6 +169,11 @@ class User {
           firstName: "first_name",
           lastName: "last_name",
         });
+        if(data.password){
+          const hashedPassword = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+          data.password=hashedPassword;
+
+        }
     const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users 
