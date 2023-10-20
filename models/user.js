@@ -163,17 +163,18 @@ class User {
    */
 
    static async update(id, data) {
+    if(data.password){
+      const hashedPassword = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+      data.password=hashedPassword;
+
+    }
     const { setCols, values } = sqlForPartialUpdate(
         data,
         {
           firstName: "first_name",
           lastName: "last_name",
         });
-        if(data.password){
-          const hashedPassword = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
-          data.password=hashedPassword;
 
-        }
     const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users 
