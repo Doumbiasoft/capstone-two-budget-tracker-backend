@@ -132,21 +132,21 @@ class User {
 
     if (!user) throw new NotFoundError(`No user with id: ${id}`);
 
-    const userTransactions = await db.query(
-          `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
-           FROM transactions AS t
-           LEFT JOIN categories AS c ON t.category_id = c.id
-           WHERE t.user_id = $1`, [user.id]);
+    // const userTransactions = await db.query(
+    //       `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
+    //        FROM transactions AS t
+    //        LEFT JOIN categories AS c ON t.category_id = c.id
+    //        WHERE t.user_id = $1`, [user.id]);
 
-    user.transactions = userTransactions.rows;
+    // user.transactions = userTransactions.rows;
 
 
-    const userCategories = await db.query(
-      `SELECT id, user_id AS "userId", name, type
-       FROM categories
-       WHERE user_id = $1`, [user.id]);
+    // const userCategories = await db.query(
+    //   `SELECT id, user_id AS "userId", name, type
+    //    FROM categories
+    //    WHERE user_id = $1`, [user.id]);
 
-    user.categories = userCategories.rows;
+    // user.categories = userCategories.rows;
 
     return user;
   }
