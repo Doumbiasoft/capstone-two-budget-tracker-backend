@@ -215,6 +215,9 @@ class User {
     startDate.setDate(today.getDate() - 6);
     const endDate = today;
 
+    const startDateMonthly = new Date(today);
+    startDateMonthly.setDate(today.getDate() - 30);
+
     
     /* Last seven days transitions */
     const result =  db.query(
@@ -231,22 +234,22 @@ class User {
        WHERE t.user_id = $1 ORDER BY t.date DESC LIMIT 5`, [userId]);
 
      /* All transitions */
-     const resultAll =  db.query(
+     const resultMonthly =  db.query(
       `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
        FROM transactions AS t
        LEFT JOIN categories AS c ON t.category_id = c.id
-       WHERE t.user_id = $1`, [userId]);
+       WHERE t.user_id = $1 AND (t.date >=$2 AND t.date <= $3)`, [userId, startDateMonthly, endDate]);
 
-    const requests = await Promise.all([result, resultRecentTransactions, resultAll])
+    const requests = await Promise.all([result, resultRecentTransactions, resultMonthly])
     
     /**Last 7 days */
     const SelectedTransactions = requests[0].rows;
     dataDashboard.lastSevenTransactions = SelectedTransactions.map((row) => {
       return { ...row, amount: row.amount};
     });
-     /** All days */
-    const SelectedTransactionsAll = requests[2].rows;
-    dataDashboard.lastTransactions = SelectedTransactionsAll.map((row) => {
+     /** Monthly */
+    const SelectedTransactionsMonthly = requests[2].rows;
+    dataDashboard.monthlyTransactions = SelectedTransactionsMonthly.map((row) => {
       return { ...row, amount: row.amount};
     });
 
@@ -257,24 +260,24 @@ class User {
     const TotalIncome = SelectedTransactions.filter((x)=> x.categoryType === "Income").reduce((prev, next) => +prev + +next.amount, 0);
     dataDashboard.totalIncome = TotalIncome;
 
-      /* Total Income All*/
-      const TotalIncomeAll = SelectedTransactionsAll.filter((x)=> x.categoryType === "Income").reduce((prev, next) => +prev + +next.amount, 0);
-      dataDashboard.totalIncomeAll = TotalIncomeAll;
+      /* Total Income Monthly*/
+      const TotalIncomeMonthly = SelectedTransactionsMonthly.filter((x)=> x.categoryType === "Income").reduce((prev, next) => +prev + +next.amount, 0);
+      dataDashboard.totalIncomeMonthly = TotalIncomeMonthly;
 
     /* Total Expenses Last 7 days */
     const TotalExpense = SelectedTransactions.filter((x)=> x.categoryType === "Expense").reduce((prev, next) => +prev + +next.amount, 0);
     dataDashboard.totalExpense = TotalExpense;
 
-     /* Total Expenses All */
-     const TotalExpenseAll = SelectedTransactionsAll.filter((x)=> x.categoryType === "Expense").reduce((prev, next) => +prev + +next.amount, 0);
-     dataDashboard.totalExpenseAll = TotalExpenseAll;
+     /* Total Expenses Monthly */
+     const TotalExpenseMonthly = SelectedTransactionsMonthly.filter((x)=> x.categoryType === "Expense").reduce((prev, next) => +prev + +next.amount, 0);
+     dataDashboard.totalExpenseMonthly = TotalExpenseMonthly;
 
     /* Balance calculation Last 7 days */
     const Balance = TotalIncome - TotalExpense;
     dataDashboard.balance = Balance;
-    /* Balance All calculation */
-    const BalanceAll = TotalIncomeAll - TotalExpenseAll;
-    dataDashboard.balanceAll = BalanceAll;
+    /* Balance Monthly calculation */
+    const BalanceMonthly = TotalIncomeMonthly - TotalExpenseMonthly;
+    dataDashboard.balanceMonthly = BalanceMonthly;
 
 
     /*-------- Doughnut Chart - Expense By Category Last 7 days ------------*/
