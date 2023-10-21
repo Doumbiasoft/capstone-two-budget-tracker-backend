@@ -245,7 +245,7 @@ class User {
       return { ...row, amount: row.amount};
     });
      /** All days */
-    const SelectedTransactionsAll = requests[3].rows;
+    const SelectedTransactionsAll = requests[2].rows;
     dataDashboard.lastTransactions = SelectedTransactionsAll.map((row) => {
       return { ...row, amount: row.amount};
     });
