@@ -342,6 +342,7 @@ HTTP **POST**: create a transaction.
 }
 ```
 * HTTP **PATCH**: update a transaction.
+* **/transactions/:id**
 ```json
 {
     "categoryId":"41",
