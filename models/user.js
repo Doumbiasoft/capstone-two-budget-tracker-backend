@@ -103,7 +103,7 @@ class User {
                   first_name AS "firstName",
                   last_name AS "lastName"
            FROM users
-           ORDER BY firstName`,
+           ORDER BY first_name`,
     );
 
     return result.rows;
@@ -136,15 +136,6 @@ class User {
       `SELECT id, user_id AS "userId", name, type
        FROM categories
        WHERE user_id = $1`, [user.id]);
-
-    // const userTransactions =  db.query(
-    //       `SELECT t.id, t.category_id AS "categoryId", t.user_id AS "userId", t.amount, t.date, t.note, c.name AS "categoryName", c.type AS "categoryType"
-    //        FROM transactions AS t
-    //        LEFT JOIN categories AS c ON t.category_id = c.id
-    //        WHERE t.user_id = $1`, [user.id]);
-
-    //const requests = await Promise.all([userCategories, userTransactions]);
-    //user.transactions = requests[1].rows;
 
     user.categories = userCategories.rows;
 
@@ -199,8 +190,7 @@ class User {
          FROM users
          WHERE id = $1
          RETURNING id`, [id]);
-    const user = result.rows[0];
-    delete user.password;
+        const user = result.rows[0];
     if (!user) throw new NotFoundError(`No user: ${id}`);
   }
 

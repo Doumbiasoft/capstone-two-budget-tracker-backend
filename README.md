@@ -2,10 +2,11 @@
 
 ## Unit 50 Capstone 2
 
->Create a personal finance app for tracking income, expenses. Implement data visualization to help users analyze their financial trends.
->**Host:** **[Render.com](https://render.com)**
->**The JSON REST API is online at:**
->**https://expense-tracker-backend-jnmy.onrender.com**
+Create a personal finance app for tracking income, expenses. Implement data visualization to help users analyze their financial trends.
+
+**Host:** **[Render.com](https://render.com)**
+**The JSON REST API is online at:**
+**https://expense-tracker-backend-jnmy.onrender.com**
 
 **DATABASE SCHEMA**:
 ![Img-Light](documentation/medias/images/expense_tracker_database_schema_light.png#gh-light-mode-only)![Img-Dark](documentation/medias/images/expense_tracker_database_schema_dark.png#gh-dark-mode-only)
@@ -15,6 +16,9 @@ This application has been created using the following components:
 - **NodeJS**
 - **Express** as a framework
 - **Posgtres sql** as a Database
+- **Bcrypt** for Encryption
+- **jsonschema** for data types checking,
+- **jsonwebtoken**
 
 ## Getting Started
 To use this application, you will need to download and install [NodeJS](http://nodejs.org/download/).
@@ -37,6 +41,10 @@ Once the dependancies are installed, you can start the application server by run
 ``` bash
 npm start
 ```
+To execute all test in this app run this command:
+``` bash
+npm test
+```
 
 Once the server is running, you can access to the API by opening your browser to [http://localhost:3001](http://localhost:3001).
 
@@ -47,7 +55,7 @@ To stop the server, press CTRL-C.
 The URL BASE JSON REST API is exposed at [http://localhost:3001](http://localhost:3001).
 
 #### API Endpoints
-#### => authentication
+>#### => authentication
 * **/auth**
 HTTP **POST**: authenticate a user
 ```json
@@ -72,7 +80,7 @@ HTTP **POST**: register a new user
     "password":"motdepasse"
 }
 ``` 
-#### => users
+>#### => users
 * **/users/:id**  
 HTTP **GET**: returns the user with given id (numeric, auto-incrementing).  HTTP 404 if user not found 
 ```json
@@ -256,7 +264,7 @@ Here is an example of results returned from HTTP GET on **/users/:id/dashboard**
     }
 }
 ```
-#### => categories
+>#### => categories
 * **/categories**
 HTTP **POST**: create a category (The type should be **"Expense"** or **"Income"**).
 ```json
@@ -329,7 +337,7 @@ HTTP **PATCH**: update a category.
 ```
 * HTTP **DELETE**: delete a category and return the id of item deleted.
 
-#### => transactions
+>#### => transactions
 * **/transactions**
 HTTP **POST**: create a transaction.
 ```json

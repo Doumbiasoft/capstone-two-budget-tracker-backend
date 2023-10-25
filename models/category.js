@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../db");
-const { NotFoundError} = require("../expressError");
+const { NotFoundError, BadRequestError} = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 
 
@@ -28,7 +28,7 @@ class Category {
 
 
     const result = await db.query(
-          `INSERT INTO Categories (user_id,name,type)
+          `INSERT INTO Categories (user_id, name, type)
            VALUES ($1, $2, $3)
            RETURNING id, user_id AS "userId", name, type`,
         [
@@ -107,7 +107,7 @@ class Category {
    */
 
   static async update(id, data) {
-
+    if(!data) throw new BadRequestError();
     if (data.type!=="Expense" && data.type!=="Income") throw new NotFoundError(`The category type should be: Expense OR Income`);
 
     const { setCols, values } = sqlForPartialUpdate(

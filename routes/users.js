@@ -54,7 +54,7 @@ router.post("/", async function (req, res, next) {
 
 /** GET /[id] => { user }
  *
-   *   Returns { email, firstName, lastName, transactions, categories }
+   *   Returns { email, firstName, lastName, categories }
    *   where transaction is { id, categoryId, userId, amount, date, note, categoryName }
    *   where category is { id, userId, name, type}
    * 
