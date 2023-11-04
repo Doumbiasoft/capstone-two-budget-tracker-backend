@@ -8,13 +8,13 @@ const {
 const db = require("../db.js");
 const User = require("./user.js");
 const {
-    commonBeforeAll,
-    commonBeforeEach,
-    commonAfterEach,
-    commonAfterAll,
-    testUserIds,
-    testCategoriesIds
-  
+  commonBeforeAll,
+  commonBeforeEach,
+  commonAfterEach,
+  commonAfterAll,
+  testUserIds,
+  testCategoriesIds
+
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -27,11 +27,15 @@ afterAll(commonAfterAll);
 describe("authenticate", function () {
   test("works", async function () {
     const user = await User.authenticate("expense1@tracker.com", "password1");
+    console.log("authenticated", user);
     expect(user).toEqual({
       id: testUserIds[0],
       email: "expense1@tracker.com",
       firstName: "User1First",
       lastName: "User1Last",
+      oauthId: null,
+      oauthPicture: null,
+      isOauth: false
     });
   });
 
@@ -61,6 +65,9 @@ describe("register", function () {
     email: "tester@tracker.com",
     firstName: "Test",
     lastName: "Tester",
+    oauthId: null,
+    oauthPicture: null,
+    isOauth: false
   };
 
   test("works", async function () {
@@ -69,7 +76,7 @@ describe("register", function () {
       password: "password5",
 
     });
-    const finalnewUser ={...newUser,id:"4"} 
+    const finalnewUser = { ...newUser, id: "4" }
     expect(user).toEqual(finalnewUser);
     const found = await db.query("SELECT * FROM users WHERE email = 'tester@tracker.com'");
     expect(found.rows.length).toEqual(1);
@@ -106,18 +113,27 @@ describe("findAll", function () {
         firstName: "User1First",
         lastName: "User1Last",
         email: "expense1@tracker.com",
+        oauthId: null,
+        oauthPicture: null,
+        isOauth: false
       },
       {
         id: testUserIds[1],
         firstName: "User2First",
         lastName: "User2Last",
         email: "expense2@tracker.com",
+        oauthId: null,
+        oauthPicture: null,
+        isOauth: false
       },
       {
         id: testUserIds[2],
         firstName: "User3First",
         lastName: "User3Last",
         email: "expense3@tracker.com",
+        oauthId: null,
+        oauthPicture: null,
+        isOauth: false
       },
     ]);
   });
@@ -130,15 +146,18 @@ describe("get", function () {
     let user = await User.get(testUserIds[0]);
 
     expect(user).toEqual({
-        id: testUserIds[0],
-        firstName: "User1First",
-        lastName: "User1Last",
-        email: "expense1@tracker.com",
-        categories: [
-            { id: testCategoriesIds[0].id, userId: testCategoriesIds[0].userId, name: 'Salary', type: 'Income' },
-            { id: testCategoriesIds[1].id, userId: testCategoriesIds[1].userId, name: 'Rent', type: 'Expense' },
-            { id: testCategoriesIds[2].id, userId: testCategoriesIds[2].userId, name: 'Groceries', type: 'Expense' }
-        ]
+      id: testUserIds[0],
+      firstName: "User1First",
+      lastName: "User1Last",
+      email: "expense1@tracker.com",
+      isOauth: false,
+      oauthId: null,
+      oauthPicture: null,
+      categories: [
+        { id: testCategoriesIds[0].id, userId: testCategoriesIds[0].userId, name: 'Salary', type: 'Income' },
+        { id: testCategoriesIds[1].id, userId: testCategoriesIds[1].userId, name: 'Rent', type: 'Expense' },
+        { id: testCategoriesIds[2].id, userId: testCategoriesIds[2].userId, name: 'Groceries', type: 'Expense' }
+      ]
     });
   });
 
@@ -159,6 +178,7 @@ describe("update", function () {
     firstName: "User1FirstUpdate",
     lastName: "User1LastUpdate",
     email: "expense1@tracker.com",
+
   };
 
   test("works", async function () {
@@ -167,6 +187,9 @@ describe("update", function () {
     expect(user).toEqual({
       id: testUserIds[0],
       ...updateData,
+      oauthId:null,
+      oauthPicture: null,
+      isOauth: false
     });
   });
 
@@ -176,12 +199,15 @@ describe("update", function () {
     });
 
     expect(user).toEqual({
-        id: testUserIds[0],
-        firstName: "User1First",
-        lastName: "User1Last",
-        email: "expense1@tracker.com",
+      id: testUserIds[0],
+      firstName: "User1First",
+      lastName: "User1Last",
+      email: "expense1@tracker.com",
+      oauthId:null,
+      oauthPicture: null,
+      isOauth: false
     });
-    const found = await db.query(`SELECT * FROM users WHERE id = $1`,[testUserIds[0]]);
+    const found = await db.query(`SELECT * FROM users WHERE id = $1`, [testUserIds[0]]);
     expect(found.rows.length).toEqual(1);
     expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
   });
@@ -214,16 +240,16 @@ describe("remove", function () {
   test("works", async function () {
     await User.remove(testUserIds[0]);
     const res = await db.query(
-        `SELECT * FROM users WHERE id=$1`,[testUserIds[0]]);
+      `SELECT * FROM users WHERE id=$1`, [testUserIds[0]]);
     expect(res.rows.length).toEqual(0);
   });
 
   test("not found if no such user", async function () {
     try {
-     await User.remove(0);
-     fail();
+      await User.remove(0);
+      fail();
     } catch (err) {
-        console.log("Error--user--remove-notFound: ",err);
+      console.log("Error--user--remove-notFound: ", err);
 
       expect(err instanceof NotFoundError).toBeTruthy();
     }
