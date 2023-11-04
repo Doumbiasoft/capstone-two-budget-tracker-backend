@@ -59,14 +59,13 @@ class User {
    *
    * Returns { id, firstName, lastName, email ,isOauth, oauthId, oauthPicture }
    *
-   * Throws BadRequestError on duplicates.
    **/
 
   static async oauth(user) {
     const data = {
       firstName: user.firstName,
-      lastName:user.lastName,
-      email:user.email,
+      lastName: user.lastName,
+      email: user.email,
       oauthId: user.oauthId,
       oauthProvider: user.oauthProvider,
       oauthPicture: user.oauthPicture,
@@ -79,7 +78,7 @@ class User {
       [data.email],
     );
 
-    if (duplicateCheck.rows[0]){
+    if (duplicateCheck.rows[0]) {
       const { setCols, values } = sqlForPartialUpdate(
         data,
         {
@@ -87,7 +86,7 @@ class User {
           lastName: "last_name",
           oauthId: "oauth_uid",
           oauthProvider: "oauth_provider",
-          oauthPicture: "oauth_picture"
+          oauthPicture: "oauth_picture",
         });
 
       const idVarIdx = "$" + (values.length + 1);
@@ -96,16 +95,15 @@ class User {
                       SET ${setCols}
                       WHERE id = ${idVarIdx}
                       RETURNING id, email, first_name AS "firstName", last_name AS "lastName", is_oauth AS "isOauth",
-                      oauth_uid AS "oauthId",
-                      oauth_picture AS "oauthPicture"`;
+                      oauth_uid AS "oauthId", oauth_picture AS "oauthPicture" `;
       const result = await db.query(querySql, [...values, duplicateCheck.rows[0].id]);
       const user = result.rows[0];
-      user.IsNew = false;
-
       if (!user) throw new NotFoundError(`No OAuth user: ${duplicateCheck.rows[0].id}`);
+
+      user.IsNew = false;
       return user;
 
-    }else{
+    } else {
 
       const result = await db.query(
         `INSERT INTO users
@@ -129,7 +127,7 @@ class User {
           data.oauthId,
           data.oauthProvider,
           data.oauthPicture,
-          true
+          "true"
         ]
       );
       const user = result.rows[0];
@@ -193,7 +191,6 @@ class User {
                   is_oauth AS "isOauth",
                   oauth_uid AS "oauthId",
                   oauth_picture AS "oauthPicture"
-
            FROM users
            ORDER BY first_name`,
     );
