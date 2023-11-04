@@ -64,6 +64,18 @@ HTTP **POST**: authenticate a user
     "password":"motdepasse",
 }
 ``` 
+* **/oauth**
+HTTP **POST**: authenticate a user (**third party)**
+```json
+{
+      "firstName": "first name",
+      "lastName":"last name",
+      "email":"email",
+      "oauthId": "oauthId",
+      "oauthProvider": "oauthProvider",
+      "oauthPicture": "oauthPicture"
+}
+```
 And return a **token**
 ```json
 {
@@ -87,31 +99,13 @@ HTTP **GET**: returns the user with given id (numeric, auto-incrementing).  HTTP
 {
     "user": {
         "id": "7",
-        "email": "doumbiasoft@gmail.com",
+        "email": "doumbiaxxxx@gmail.com",
         "firstName": "Mouhamed",
         "lastName": "Doumbia",
-        "transactions": [
-            {
-                "id": "6",
-                "categoryId": "42",
-                "userId": "7",
-                "amount": "100.00",
-                "date": "2023-10-05T04:00:00.000Z",
-                "note": "My groceries",
-                "categoryName": "Groceries",
-                "categoryType": "Expense"
-            },
-            {
-                "id": "5",
-                "categoryId": "51",
-                "userId": "7",
-                "amount": "5000.00",
-                "date": "2023-10-06T04:00:00.000Z",
-                "note": "My Salary",
-                "categoryName": "Salary",
-                "categoryType": "Income"
-            }
-        ],
+        "oauthId": "",
+        "oauthProvider":"",
+        "oauthPicture": "",
+        "isOauth": false,
         "categories": [
             {
                 "id": "36",

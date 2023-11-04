@@ -10,6 +10,7 @@ const express = require("express");
 const router = new express.Router();
 const { createToken } = require("../helpers/tokens");
 const userAuthSchema = require("../schemas/userAuth.json");
+const oAuth = require("../schemas/oAuth.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
 const { BadRequestError } = require("../expressError");
 
@@ -32,6 +33,29 @@ router.post("/token", async function (req, res, next) {
 
     const { email, password } = req.body;
     const user = await User.authenticate(email, password);
+    const token = createToken(user);
+    return res.json({ token });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** POST /auth/oauth:  { firstName, lastName, email , oauthId, oauthProvider, oauthPicture } => { token }
+ *
+ * Returns JWT token which can be used to authenticate further requests.
+ *
+ * Authorization required: none
+ */
+
+router.post("/oauth", async function (req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, oAuth);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+
+    const user = await User.oauth(req.body);
     const token = createToken(user);
     return res.json({ token });
   } catch (err) {
