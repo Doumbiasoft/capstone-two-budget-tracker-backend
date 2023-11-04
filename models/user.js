@@ -69,7 +69,8 @@ class User {
       oauthId: user.oauthId,
       oauthProvider: user.oauthProvider,
       oauthPicture: user.oauthPicture,
-      password: ""
+      password: "",
+      isOauth:true
     }
     const duplicateCheck = await db.query(
       `SELECT email,id
@@ -87,6 +88,7 @@ class User {
           oauthId: "oauth_uid",
           oauthProvider: "oauth_provider",
           oauthPicture: "oauth_picture",
+          isOauth: "is_oauth",
         });
 
       const idVarIdx = "$" + (values.length + 1);
@@ -127,7 +129,7 @@ class User {
           data.oauthId,
           data.oauthProvider,
           data.oauthPicture,
-          "true",
+          data.isOauth
         ]
       );
       const user = result.rows[0];
