@@ -69,17 +69,17 @@ class User {
       email:user.email,
       oauthId: user.oauthId,
       oauthProvider: user.oauthProvider,
-      oauthPicture: user.oauthPicture
+      oauthPicture: user.oauthPicture,
+      password: ""
     }
     const duplicateCheck = await db.query(
       `SELECT email,
-            oauth_uid AS "oauthId"
            FROM users
            WHERE email = $1`,
       [data.email],
     );
 
-    if (duplicateCheck.rows[0] && (duplicateCheck.rows[0].oauthId === data.oauthId)){
+    if (duplicateCheck.rows[0]){
       const { setCols, values } = sqlForPartialUpdate(
         data,
         {
@@ -94,14 +94,15 @@ class User {
 
       const querySql = `UPDATE users
                       SET ${setCols}
-                      WHERE oauth_uid = ${idVarIdx}
+                      WHERE id = ${idVarIdx}
                       RETURNING id, email, first_name AS "firstName", last_name AS "lastName", is_oauth AS "isOauth",
                       oauth_uid AS "oauthId",
                       oauth_picture AS "oauthPicture"`;
-      const result = await db.query(querySql, [...values, data.oauthId]);
+      const result = await db.query(querySql, [...values, duplicateCheck.rows[0].id]);
       const user = result.rows[0];
+      user.IsNew = false;
 
-      if (!user) throw new NotFoundError(`No OAuth user: ${data.oauthId}`);
+      if (!user) throw new NotFoundError(`No OAuth user: ${duplicateCheck.rows[0].id}`);
       return user;
 
     }else{
@@ -111,11 +112,12 @@ class User {
              (email,
               first_name,
               last_name,
+              password,
               oauth_uid,
               oauth_provider,
               oauth_picture,
               is_oauth)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
              RETURNING id, email, first_name AS "firstName", last_name AS "lastName", is_oauth AS "isOauth",
              oauth_uid AS "oauthId",
              oauth_picture AS "oauthPicture" `,
@@ -123,13 +125,15 @@ class User {
           data.email,
           data.firstName,
           data.lastName,
+          data.password,
           data.oauthId,
           data.oauthProvider,
           data.oauthPicture,
           true
-        ],
+        ]
       );
       const user = result.rows[0];
+      user.IsNew = true;
       return user;
     }
   }

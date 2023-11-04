@@ -76,12 +76,7 @@ HTTP **POST**: authenticate a user (**third party)**
       "oauthPicture": "oauthPicture"
 }
 ```
-And return a **token**
-```json
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjciLCJlbWFpbCI6ImRvdW1iaWFzb2Zsgtrez0QGdtYWlsLmNvbSIsImlhdCI6MTY5Njg4ODc3MH0.LUQ8afTfwe8ybL-C8QN7zX2jokBBEgweLYvHTjncmF0"
-}
-```
+
 * **/auth/register**
 HTTP **POST**: register a new user
 ```json
@@ -92,6 +87,12 @@ HTTP **POST**: register a new user
     "password":"motdepasse"
 }
 ``` 
+And return a **token**
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjciLCJlbWFpbCI6ImRvdW1iaWFzb2Zsgtrez0QGdtYWlsLmNvbSIsImlhdCI6MTY5Njg4ODc3MH0.LUQ8afTfwe8ybL-C8QN7zX2jokBBEgweLYvHTjncmF0"
+}
+```
 >#### => users
 * **/users/:id**  
 HTTP **GET**: returns the user with given id (numeric, auto-incrementing).  HTTP 404 if user not found 

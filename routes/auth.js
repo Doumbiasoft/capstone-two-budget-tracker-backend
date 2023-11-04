@@ -55,9 +55,17 @@ router.post("/oauth", async function (req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const user = await User.oauth(req.body);
-    const token = createToken(user);
-    return res.json({ token });
+    const newUser = await User.oauth(req.body);
+
+    if (newUser.IsNew) {
+      const userId = newUser.id;
+      for (let cat of categories) {
+        await Category.create({ ...cat, userId });
+      }
+    }
+    const token = createToken(newUser);
+    return newUser.IsNew ? res.status(201).json({ token }) : res.json({ token });
+
   } catch (err) {
     return next(err);
   }
@@ -82,11 +90,11 @@ router.post("/register", async function (req, res, next) {
     }
 
     const newUser = await User.register({ ...req.body });
-    if (newUser){
+    if (newUser) {
       const userId = newUser.id;
-     for(let cat of categories){
-      await Category.create({...cat, userId});
-     }
+      for (let cat of categories) {
+        await Category.create({ ...cat, userId });
+      }
     }
     const token = createToken(newUser);
     return res.status(201).json({ token });
