@@ -127,7 +127,7 @@ class User {
           data.oauthId,
           data.oauthProvider,
           data.oauthPicture,
-          "true"
+          true
         ]
       );
       const user = result.rows[0];
