@@ -7,7 +7,7 @@ CREATE TABLE users (
   password varchar NOT NULL,
   oauth_provider varchar(255),
   oauth_uid varchar(255),
-  oauth_picture varchar(255),
+  oauth_picture TEXT,
   password_reset_token varchar(255),
   is_oauth boolean DEFAULT false,
   created_at timestamp DEFAULT CURRENT_DATE NOT NULL,
