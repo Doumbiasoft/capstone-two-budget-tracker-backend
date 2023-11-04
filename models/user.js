@@ -72,7 +72,7 @@ class User {
       password: ""
     }
     const duplicateCheck = await db.query(
-      `SELECT email
+      `SELECT email,id
            FROM users
            WHERE email = $1`,
       [data.email],
