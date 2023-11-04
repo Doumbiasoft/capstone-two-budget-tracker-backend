@@ -103,33 +103,35 @@ class User {
 
       if (!user) throw new NotFoundError(`No OAuth user: ${data.oauthId}`);
       return user;
-    }
 
-    const result = await db.query(
-      `INSERT INTO users
-           (email,
-            first_name,
-            last_name,
-            oauth_uid,
-            oauth_provider,
-            oauth_picture,
-            is_oauth)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)
-           RETURNING id, email, first_name AS "firstName", last_name AS "lastName", is_oauth AS "isOauth",
-           oauth_uid AS "oauthId",
-           oauth_picture AS "oauthPicture" `,
-      [
-        data.email,
-        data.firstName,
-        data.lastName,
-        data.oauthId,
-        data.oauthProvider,
-        data.oauthPicture,
-        true
-      ],
-    );
-    const user = result.rows[0];
-    return user;
+    }else{
+
+      const result = await db.query(
+        `INSERT INTO users
+             (email,
+              first_name,
+              last_name,
+              oauth_uid,
+              oauth_provider,
+              oauth_picture,
+              is_oauth)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             RETURNING id, email, first_name AS "firstName", last_name AS "lastName", is_oauth AS "isOauth",
+             oauth_uid AS "oauthId",
+             oauth_picture AS "oauthPicture" `,
+        [
+          data.email,
+          data.firstName,
+          data.lastName,
+          data.oauthId,
+          data.oauthProvider,
+          data.oauthPicture,
+          true
+        ],
+      );
+      const user = result.rows[0];
+      return user;
+    }
   }
 
   /** Register user with data.
