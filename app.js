@@ -1,6 +1,6 @@
 "use strict";
 
-/** Express app for expense tracker. */
+/** Express app for expense tracker file. */
 
 const express = require("express");
 const cors = require("cors");
