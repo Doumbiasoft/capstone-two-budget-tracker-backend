@@ -10,8 +10,7 @@ if (process.env.NODE_ENV === "production") {
     connectionString: getDatabaseUri(),
     ssl: {
       rejectUnauthorized: false
-    },
-    family: 4, // Force IPv4
+    }
   });
 } else {
   db = new Client({
